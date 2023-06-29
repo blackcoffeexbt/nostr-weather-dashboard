@@ -61,11 +61,19 @@ export default {
             borderColor: 'blue',
           },
         ]
-      }
+      },
+      tempDataArray: [],
+      pressureDataArray: [],
+      humidityDataArray: [],
     };
   },
   methods: {
     requestData() {
+      // clear the data arrays as well
+      this.tempDataArray = []
+      this.pressureDataArray = []
+      this.humidityDataArray = []
+
       this.pressureChartData.labels = []
       this.pressureChartData.datasets[0].data = []
       this.tempChartData.labels = []
@@ -116,39 +124,30 @@ export default {
         const humidity = parseFloat(humidityMatch[1]);
         const pressure = parseFloat(pressureMatch[1]);
 
-        this.tempChartData = {
-          labels: [...this.tempChartData.labels, createdAt],
-          datasets: [
-            {
-              label: 'Temperature',
-              data: [...this.tempChartData.datasets[0].data, temperature],
-              borderColor: 'red',
-            }
-          ]
-        };
+        this.tempDataArray.push({time: createdAt, value: temperature});
+        this.humidityDataArray.push({time: createdAt, value: humidity});
+        this.pressureDataArray.push({time: createdAt, value: pressure});
 
-        this.humidityChartData = {
-          labels: [...this.humidityChartData.labels, createdAt],
-          datasets: [
-            {
-              label: 'Humidity',
-              data: [...this.humidityChartData.datasets[0].data, humidity],
-              borderColor: 'blue',
-            }
-          ]
-        };
+        // sort data arrays by 'time'
+        this.tempDataArray.sort((a, b) => a.time.localeCompare(b.time));
+        this.humidityDataArray.sort((a, b) => a.time.localeCompare(b.time));
+        this.pressureDataArray.sort((a, b) => a.time.localeCompare(b.time));
 
-        this.pressureChartData = {
-          labels: [...this.pressureChartData.labels, createdAt],
-          datasets: [
-            {
-              label: 'Pressure',
-              data: [...this.pressureChartData.datasets[0].data, pressure],
-              borderColor: 'green',
-            }
-          ]
-        };
+        // update chart data from sorted data arrays
+        this.updateChartData(this.tempChartData, this.tempDataArray, 'Temperature', 'red');
+        this.updateChartData(this.humidityChartData, this.humidityDataArray, 'Humidity', 'blue');
+        this.updateChartData(this.pressureChartData, this.pressureDataArray, 'Pressure', 'green');
       }
+    },
+    updateChartData(chartData, dataArray, label, color) {
+      chartData.labels = dataArray.map(item => item.time);
+      chartData.datasets = [
+        {
+          label: label,
+          data: dataArray.map(item => item.value),
+          borderColor: color,
+        }
+      ];
     }
   },
   mounted() {
