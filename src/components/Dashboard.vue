@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <h1>Nostr Weather Dashboard</h1>
+    <h1>Nostr Mesh Weather Dashboard</h1>
 
+  <form @submit.prevent="requestData">
     <fieldset>
       <label>Enter a weather node's pubkey (hex format):</label>
       <input v-model="weatherpubkey">
@@ -10,8 +11,8 @@
       <label>How many records to retrieve on first request?</label>
       <input v-model="limit">
     </fieldset>
-
-    <button @click="requestData()">Get weather data</button>
+    <input type="submit" value="Get weather data"/>
+  </form>
     <br/>
     <!--    <button @click="sendMessage">Send Message</button>-->
     <line-chart class="weather-chart" :chart-data="tempChartData"></line-chart>
