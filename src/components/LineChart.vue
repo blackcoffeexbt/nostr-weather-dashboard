@@ -16,7 +16,7 @@ export default {
     }
   },
   watch: {
-    chartData: {
+    'chartData.labels': {
       handler() {
         this.renderChart(this.chartData, this.options)
       },
