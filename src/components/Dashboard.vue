@@ -11,7 +11,7 @@
       <input v-model="limit">
     </fieldset>
 
-    <button @click="requestData()">Connect</button>
+    <button @click="requestData()">Get weather data</button>
     <br/>
     <!--    <button @click="sendMessage">Send Message</button>-->
     <line-chart class="weather-chart" :chart-data="tempChartData"></line-chart>
@@ -66,6 +66,12 @@ export default {
   },
   methods: {
     requestData() {
+      this.pressureChartData.labels = []
+      this.pressureChartData.datasets[0].data = []
+      this.tempChartData.labels = []
+      this.tempChartData.datasets[0].data = []
+      this.humidityChartData.labels = []
+      this.humidityChartData.datasets[0].data = []
       let request = `["REQ", "12312312lkj12lk3j1l", {"authors": ["${this.weatherpubkey}"], "kinds": [1], "limit": ${this.limit}}]`
       console.log(request)
       this.socket.send(request);
