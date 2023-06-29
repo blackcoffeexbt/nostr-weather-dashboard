@@ -1,8 +1,18 @@
 <template>
   <div id="app">
     <h1>Nostr Weather Dashboard</h1>
-    <input v-model="weatherpubkey">
+
+    <fieldset>
+      <label>Enter a weather node's pubkey (hex format):</label>
+      <input v-model="weatherpubkey">
+    </fieldset>
+    <fieldset>
+      <label>How many records to retrieve on first request?</label>
+      <input v-model="limit">
+    </fieldset>
+
     <button @click="requestData()">Connect</button>
+    <br/>
     <!--    <button @click="sendMessage">Send Message</button>-->
     <line-chart class="weather-chart" :chart-data="tempChartData"></line-chart>
     <line-chart class="weather-chart" :chart-data="humidityChartData"></line-chart>
@@ -21,6 +31,7 @@ export default {
       socket: null,
       message: "",
       weatherpubkey: "d0bfc94bd4324f7df2a7601c4177209828047c4d3904d64009a3c67fb5d5e7ca",
+      limit: 10,
       tempChartData: {
         labels: [],
         datasets: [
@@ -55,7 +66,7 @@ export default {
   },
   methods: {
     requestData() {
-      let request = `["REQ", "12312312lkj12lk3j1l", {"authors": ["${this.weatherpubkey}"], "kinds": [1], "limit": 100}]`
+      let request = `["REQ", "12312312lkj12lk3j1l", {"authors": ["${this.weatherpubkey}"], "kinds": [1], "limit": ${this.limit}}]`
       console.log(request)
       this.socket.send(request);
     },
@@ -150,5 +161,22 @@ export default {
   font-family: Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
+}
+
+input, button {
+  padding: 5px;
+}
+
+input {
+  width: 400px;
+  max-width: 100%;
+}
+
+label {
+  margin-right: 10px;
+}
+
+fieldset {
+  border: 0;
 }
 </style>
