@@ -5,6 +5,10 @@
      <router-link to="/about">What is this thing??</router-link>
     </div>
     <router-view/>
+    <footer>
+      <p>Created by <a href="https://iris.to/npub1dqepr0g4t3ahvnjtnxazvws4rkqjpxl854n29wcew8wph0fmw90qlsmmgt">BC</a></p>
+      <p><a href="https://github.com/blackcoffeexbt/nostr-weather-dashboard">Project GitHub Repo</a></p>
+      </footer>
   </div>
 </template>
 

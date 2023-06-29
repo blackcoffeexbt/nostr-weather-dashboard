@@ -4,6 +4,8 @@
     <h1>What is this thing??</h1>
     <p>This is a simple dashboard that displays data from a mesh network of environmental sensors all broadcasting data to nostr relays.</p>
     <p>It's a proof of concept right now, but is moving quickly.</p>
+    <p>Created by <a href="https://iris.to/npub1dqepr0g4t3ahvnjtnxazvws4rkqjpxl854n29wcew8wph0fmw90qlsmmgt">BC</a></p>
+    <p><a href="https://github.com/blackcoffeexbt/nostr-weather-dashboard">Project GitHub Repo</a></p>
     <h2>Huh?</h2>
     <p>The mesh network is a self-healing esp32 mesh network with one or many internet gateway nodes (IGNs). The IGNs broadcast to the mesh that they
       can connect to the internet. The non-IGN nodes, route nostr events to the IGNs. The IGNs then broadcast the events to the nostr relays.</p>
