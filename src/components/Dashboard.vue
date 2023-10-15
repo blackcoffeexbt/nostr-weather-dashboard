@@ -16,7 +16,7 @@
     <br/>
     <!--    <button @click="sendMessage">Send Message</button>-->
     <line-chart class="weather-chart" :chart-data="tempChartData"></line-chart>
-    <line-chart class="weather-chart" :chart-data="humidityChartData"></line-chart>
+    <!-- <line-chart class="weather-chart" :chart-data="humidityChartData"></line-chart> -->
     <line-chart class="weather-chart" :chart-data="pressureChartData"></line-chart>
     <p>{{ message }}</p>
   </div>
@@ -81,12 +81,12 @@ export default {
       this.tempChartData.datasets[0].data = []
       this.humidityChartData.labels = []
       this.humidityChartData.datasets[0].data = []
-      let request = `["REQ", "12312312lkj12lk3j1l", {"authors": ["${this.weatherpubkey}"], "kinds": [1], "limit": ${this.limit}}]`
+      let request = `["REQ", "12312312lkj12lk3j1l", {"authors": ["${this.weatherpubkey}"], "kinds": [8003, 8004], "limit": ${this.limit}}]`
       console.log(request)
       this.socket.send(request);
     },
     setupSocket() {
-      this.socket = new WebSocket('wss://nostr.mom');
+      this.socket = new WebSocket('wss://nos.lol');
       this.socket.onopen = () => {
         console.log('Connected');
       };
@@ -113,30 +113,22 @@ export default {
       return `${yyyy}-${MM}-${dd} ${HH}:${mm}`;
     },
     parseMessage(message) {
+      console.log(message);
       const content = message[2].content;
       const createdAt = this.formatDate(new Date(message[2].created_at * 1000)); // convert to milliseconds
 
-      const tempMatch = content.match(/Temperature is (\d+\.\d+)/);
-      const humidityMatch = content.match(/Humidity is (\d+\.\d+)/);
-      const pressureMatch = content.match(/Pressure is (\d+\.\d+)/);
-
-      if (tempMatch && humidityMatch && pressureMatch) {
-        const temperature = parseFloat(tempMatch[1]);
-        const humidity = parseFloat(humidityMatch[1]);
-        const pressure = parseFloat(pressureMatch[1]);
-
+      // if kind is 8003, then it's a temperature reading
+      // if kind is 8004, then it's a pressure reading
+      if(message[2].kind == 8003) {
+        const temperature = parseFloat(content);
         this.tempDataArray.push({time: createdAt, value: temperature});
-        this.humidityDataArray.push({time: createdAt, value: humidity});
-        this.pressureDataArray.push({time: createdAt, value: pressure});
-
-        // sort data arrays by 'time'
         this.tempDataArray.sort((a, b) => a.time.localeCompare(b.time));
-        this.humidityDataArray.sort((a, b) => a.time.localeCompare(b.time));
-        this.pressureDataArray.sort((a, b) => a.time.localeCompare(b.time));
-
-        // update chart data from sorted data arrays
         this.updateChartData(this.tempChartData, this.tempDataArray, 'Temperature', 'red');
-        this.updateChartData(this.humidityChartData, this.humidityDataArray, 'Humidity', 'blue');
+      }
+      else if(message[2].kind == 8004) {
+        const pressure = parseFloat(content);
+        this.pressureDataArray.push({time: createdAt, value: pressure});
+        this.pressureDataArray.sort((a, b) => a.time.localeCompare(b.time));
         this.updateChartData(this.pressureChartData, this.pressureDataArray, 'Pressure', 'green');
       }
     },
